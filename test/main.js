@@ -10,12 +10,22 @@ describe('Module main', () => {
 
   it('log check', () => {
     var logger = main();
-    showLogs(logger);
+    assert.ok(logger.isTraceEnabled());
+    assert.ok(logger.isDebugEnabled());
+    assert.ok(logger.isInfoEnabled());
+    assert.ok(logger.isWarnEnabled());
+    assert.ok(logger.isErrorEnabled());
+    assert.ok(logger.isFatalEnabled());
   });
 
   it('set category', () => {
     var logger = main('production');
-    showLogs(logger);
+    assert.ok(logger.isTraceEnabled());
+    assert.ok(logger.isDebugEnabled());
+    assert.ok(logger.isInfoEnabled());
+    assert.ok(logger.isWarnEnabled());
+    assert.ok(logger.isErrorEnabled());
+    assert.ok(logger.isFatalEnabled());
   });
 
   it('overwrite options', () => {
@@ -24,7 +34,12 @@ describe('Module main', () => {
         default: { appenders: ['logOut', 'logErr'], level: 'INFO' },
       },
     });
-    showLogs(logger);
+    assert.ok(!logger.isTraceEnabled());
+    assert.ok(!logger.isDebugEnabled());
+    assert.ok(logger.isInfoEnabled());
+    assert.ok(logger.isWarnEnabled());
+    assert.ok(logger.isErrorEnabled());
+    assert.ok(logger.isFatalEnabled());
   });
 
   it('set category, overwrite options', () => {
@@ -33,7 +48,12 @@ describe('Module main', () => {
         production: { appenders: ['logOut', 'logErr'], level: 'INFO' },
       },
     });
-    showLogs(logger);
+    assert.ok(!logger.isTraceEnabled());
+    assert.ok(!logger.isDebugEnabled());
+    assert.ok(logger.isInfoEnabled());
+    assert.ok(logger.isWarnEnabled());
+    assert.ok(logger.isErrorEnabled());
+    assert.ok(logger.isFatalEnabled());
   });
 });
 
