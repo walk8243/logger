@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/walk8243/walk8243-logger/issues"
   },
-  "homepage": "https://github.com/walk8243/walk8243-logger#readme"
+  "homepage": "https://github.com/walk8243/walk8243-logger#readme",
+  "dependencies": {
+    "log4js": "^3.0.5"
+  }
 }
