@@ -1,6 +1,6 @@
 {
   "name": "walk8243-logger",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "main.js",
   "scripts": {
@@ -28,5 +28,6 @@
   },
   "directories": {
     "test": "test"
-  }
+  },
+  "private": true
 }
