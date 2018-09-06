@@ -1,0 +1,20 @@
+{
+  "name": "walk8243-logger",
+  "version": "0.0.0",
+  "description": "log4jsの初期設定にデフォルトを設ける",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walk8243/walk8243-logger.git"
+  },
+  "keywords": [],
+  "author": "walk8243 (https://qiita.com/walk8243)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/walk8243/walk8243-logger/issues"
+  },
+  "homepage": "https://github.com/walk8243/walk8243-logger#readme"
+}
