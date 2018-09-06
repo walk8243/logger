@@ -1,7 +1,7 @@
 {
   "name": "walk8243-logger",
   "version": "0.0.0",
-  "description": "log4jsの初期設定にデフォルトを設ける",
+  "description": "log4jsの設定にデフォルトを設ける",
   "main": "main.js",
   "scripts": {
     "test": "mocha --exit"
@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/walk8243/walk8243-logger#readme",
   "dependencies": {
-    "log4js": "^3.0.5"
+    "log4js": "^3.0.5",
+    "rfdc": "^1.1.2"
   },
   "devDependencies": {
     "mocha": "^5.2.0",

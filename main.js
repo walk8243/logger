@@ -1,4 +1,6 @@
-const log4js = require('log4js');
+const log4js  = require('log4js'),
+      clone   = require('rfdc')({ proto: true });
+const func  = require('./lib/func');
 
 const defaults = {
   appenders: {
@@ -12,6 +14,6 @@ const defaults = {
   },
 };
 
-module.exports = logger = () => {
-  return log4js.configure(defaults).getLogger();
+module.exports = logger = (options = {}) => {
+  return log4js.configure(func.assignSecondLevel(clone(defaults), options)).getLogger();
 };
