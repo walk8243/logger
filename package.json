@@ -4,6 +4,7 @@
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "main.js",
   "scripts": {
+    "start": "node index",
     "test": "mocha --exit"
   },
   "repository": {
