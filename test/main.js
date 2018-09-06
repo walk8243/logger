@@ -13,10 +13,24 @@ describe('Module main', () => {
     showLogs(logger);
   });
 
+  it('set category', () => {
+    var logger = main('production');
+    showLogs(logger);
+  });
+
   it('overwrite options', () => {
-    var logger = main({
+    var logger = main(undefined, {
       categories: {
         default: { appenders: ['logOut', 'logErr'], level: 'INFO' },
+      },
+    });
+    showLogs(logger);
+  });
+
+  it('set category, overwrite options', () => {
+    var logger = main('production', {
+      categories: {
+        production: { appenders: ['logOut', 'logErr'], level: 'INFO' },
       },
     });
     showLogs(logger);

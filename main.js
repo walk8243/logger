@@ -14,6 +14,6 @@ const defaults = {
   },
 };
 
-module.exports = logger = (options = {}) => {
-  return log4js.configure(func.assignSecondLevel(clone(defaults), options)).getLogger();
+module.exports = logger = (category = '', options = {}) => {
+  return log4js.configure(func.assignSecondLevel(clone(defaults), options)).getLogger(category);
 };
