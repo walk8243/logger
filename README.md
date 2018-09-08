@@ -8,7 +8,7 @@ npm i walk8243-logger
 
 ## Usage
 ```.js
-logger = require('./main')();
+logger = require('walk8243-logger').getLogger();
 
 logger.trace('Entering walk8243 testing');
 logger.debug('Walk8243 is coding.');
