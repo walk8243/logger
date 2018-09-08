@@ -2,7 +2,7 @@ const assert  = require('assert'),
       sinon   = require('sinon');
 const func    = require('../lib/func');
 
-describe.only('Library func', () => {
+describe('Library func', () => {
   it('内容確認', () => {
     assert.deepEqual(Object.keys(func), ['assignSecondLevel', 'judgeAssociativeArray']);
     assert.equal(typeof func.assignSecondLevel, 'function');
@@ -10,46 +10,104 @@ describe.only('Library func', () => {
   });
 
   describe('assignSecondLevel', () => {
-    var stubTargetHasOwnProperty,
-        stubSourceHasOwnProperty;
-    var target = {
-          fuga: { a: 1 },
-          hoge: { b: 2 },
+    var stubFuncJudgeAssociativeArray,
+        spyTargetHasOwnProperty,
+        spyTargetNoFugaHasOwnProperty,
+        spySourceHasOwnProperty;
+    var target = {},
+        targetNoFuga = {},
+        source = {},
+        expectAssignTrue = {
+          fuga: { a: 3, b: 2, d: 4 },
+          hoge: { c: 3 },
         },
-        source = {
-          fuga: { a: 3, c: 4 },
+        expectAssignFalse = {
+          fuga: { a: 3, d: 4 },
+          hoge: { c: 3 },
         },
-        expectAssing = {
-          fuga: { a: 3, c: 4 },
-          hoge: { b: 2 },
-        }
+        expectAssignRevese = {
+          fuga: { a: 1, b: 2, d: 4 },
+          hoge: { c: 3 },
+        };
     before(() => {
-      stubTargetHasOwnProperty = sinon.stub(target, 'hasOwnProperty');
-      stubSourceHasOwnProperty = sinon.stub(source, 'hasOwnProperty');
+      stubFuncJudgeAssociativeArray = sinon.stub(func, 'judgeAssociativeArray');
+      spyTargetHasOwnProperty = sinon.spy(target, 'hasOwnProperty');
+      spyTargetNoFugaHasOwnProperty = sinon.spy(targetNoFuga, 'hasOwnProperty');
+      spySourceHasOwnProperty = sinon.spy(source, 'hasOwnProperty');
     });
     after(() => {
-      stubTargetHasOwnProperty.restore();
-      stubSourceHasOwnProperty.restore();
+      stubFuncJudgeAssociativeArray.restore();
+      spyTargetHasOwnProperty.restore();
+      spyTargetNoFugaHasOwnProperty.restore();
+      spySourceHasOwnProperty.restore();
     });
     beforeEach(() => {
-      stubTargetHasOwnProperty.returns(true);
-      stubSourceHasOwnProperty.returns(true);
+      stubFuncJudgeAssociativeArray.returns(true);
+      Object.assign(target, {
+        fuga: { a: 1, b: 2 },
+        hoge: { c: 3 },
+      });
+      Object.assign(targetNoFuga, {
+        hoge: { c: 3 },
+      });
+      Object.assign(source, {
+        fuga: { a: 3, d: 4 },
+      });
     });
     afterEach(() => {
-      stubTargetHasOwnProperty.reset();
-      stubSourceHasOwnProperty.reset();
+      stubFuncJudgeAssociativeArray.reset();
+      spyTargetHasOwnProperty.resetHistory();
+      spyTargetNoFugaHasOwnProperty.resetHistory();
+      spySourceHasOwnProperty.resetHistory();
     });
 
-    it('正常系', () => {
-      var result = func.assignSecondLevel(target, source);
-      assert.deepEqual(result, expectAssing);
+    describe('正常系', () => {
+      it('sourceの中身をtargetも持っている', () => {
+        var result = func.assignSecondLevel(target, source);
+        assert.deepEqual(result, expectAssignTrue);
+        assert.ok(spyTargetHasOwnProperty.calledOnce);
+        assert.ok(spySourceHasOwnProperty.calledOnce);
+        assert.deepEqual(spyTargetHasOwnProperty.args, [['fuga']]);
+        assert.deepEqual(spySourceHasOwnProperty.args, [['fuga']]);
+      });
+      it('sourceの中身をtargetが持っていない', () => {
+        var result = func.assignSecondLevel(targetNoFuga, source);
+        assert.deepEqual(result, expectAssignFalse);
+        assert.ok(spyTargetNoFugaHasOwnProperty.calledOnce);
+        assert.ok(spySourceHasOwnProperty.calledOnce);
+        assert.deepEqual(spyTargetNoFugaHasOwnProperty.args, [['fuga']]);
+        assert.deepEqual(spySourceHasOwnProperty.args, [['fuga']]);
+      });
+      it('第二引数の方がkeyが多い', () => {
+        var result = func.assignSecondLevel(source, target);
+        assert.deepEqual(result, expectAssignRevese);
+        assert.ok(spyTargetHasOwnProperty.calledTwice);
+        assert.ok(spySourceHasOwnProperty.calledTwice);
+        assert.deepEqual(spyTargetHasOwnProperty.args, [['fuga'], ['hoge']]);
+        assert.deepEqual(spySourceHasOwnProperty.args, [['fuga'], ['hoge']]);
+      });
     });
 
     describe('異常系', () => {
+      it('targetがfalse', () => {
+        stubFuncJudgeAssociativeArray.returns(false);
+        try {
+          func.assignSecondLevel(target, source);
+          assert.fail();
+        } catch(error) {
+          assert.equal(error.name, 'TypeError');
+          assert.equal(error.message, `'target' must be an Object.`);
+        }
+      });
+      it('sourceがiterableでない', () => {
+        var result = func.assignSecondLevel(target, null);
+        assert.deepEqual(result, target);
+        assert.ok(spyTargetHasOwnProperty.notCalled);
+      });
     });
   });
 
-  describe.only('judgeAssociativeArray', () => {
+  describe('judgeAssociativeArray', () => {
     class classDummy {};
     var promiseFunc = (res, rej) => {};
     function* genDummy(){};
