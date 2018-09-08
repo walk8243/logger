@@ -308,6 +308,60 @@ describe.only('Library logger', () => {
         assert.ok(logger.isErrorEnabled());
         assert.ok(logger.isFatalEnabled());
       });
+      it('category is number', () => {
+        var logger = walk8243Logger.none(123);
+        assert.equal(logger.category, '123');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('category is function', () => {
+        var logger = walk8243Logger.none(() => true);
+        assert.equal(logger.category, '() => true');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { default: { appenders: ['cheese'], level: 'error' } },
+            };
+        var logger = walk8243Logger.none(undefined, options);
+        assert.equal(logger.category, 'MidSummer');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], loggerDefaultOption);
+      });
+      it('category is cheese, option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { cheese: { appenders: ['cheese'], level: 'error' } },
+            };
+        var logger = walk8243Logger.none('cheese', options);
+        assert.equal(logger.category, 'cheese');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], loggerDefaultOption);
+      });
     });
 
     describe('color', () => {
@@ -351,6 +405,87 @@ describe.only('Library logger', () => {
         assert.ok(logger.isErrorEnabled());
         assert.ok(logger.isFatalEnabled());
       });
+      it('category is number', () => {
+        var logger = walk8243Logger.color(123);
+        assert.equal(logger.category, '123');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('category is function', () => {
+        var logger = walk8243Logger.color(() => true);
+        assert.equal(logger.category, '() => true');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { default: { appenders: ['cheese'], level: 'error' } },
+            },
+            expectLoggerOptions = {
+              appenders: {
+                out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
+                err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
+                logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
+                logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
+                cheese: { type: 'file', filename: 'cheese.log' }
+              },
+              categories: {
+                default: { appenders: ['cheese'], level: 'error' },
+                production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
+              }
+            };
+        var logger = walk8243Logger.color(undefined, options);
+        assert.equal(logger.category, 'MidSummer');
+        assert.equal(logger.isTraceEnabled(), false);
+        assert.equal(logger.isDebugEnabled(), false);
+        assert.equal(logger.isInfoEnabled(), false);
+        assert.equal(logger.isWarnEnabled(), false);
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
+      });
+      it('category is cheese, option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { cheese: { appenders: ['cheese'], level: 'error' } },
+            },
+            expectLoggerOptions = {
+              appenders: {
+                out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
+                err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
+                logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
+                logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
+                cheese: { type: 'file', filename: 'cheese.log' }
+              },
+              categories: {
+                default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
+                production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' },
+                cheese: { appenders: ['cheese'], level: 'error' }
+              }
+            };
+        var logger = walk8243Logger.color('cheese', options);
+        assert.equal(logger.category, 'cheese');
+        assert.equal(logger.isTraceEnabled(), false);
+        assert.equal(logger.isDebugEnabled(), false);
+        assert.equal(logger.isInfoEnabled(), false);
+        assert.equal(logger.isWarnEnabled(), false);
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
+      });
     });
 
     describe('nocolor', () => {
@@ -393,6 +528,87 @@ describe.only('Library logger', () => {
         assert.ok(logger.isWarnEnabled());
         assert.ok(logger.isErrorEnabled());
         assert.ok(logger.isFatalEnabled());
+      });
+      it('category is number', () => {
+        var logger = walk8243Logger.nocolor(123);
+        assert.equal(logger.category, '123');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('category is function', () => {
+        var logger = walk8243Logger.nocolor(() => true);
+        assert.equal(logger.category, '() => true');
+        assert.ok(logger.isTraceEnabled());
+        assert.ok(logger.isDebugEnabled());
+        assert.ok(logger.isInfoEnabled());
+        assert.ok(logger.isWarnEnabled());
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+      });
+      it('option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { default: { appenders: ['cheese'], level: 'error' } },
+            },
+            expectLoggerOptions = {
+              appenders: {
+                out: { type: 'stdout', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
+                err: { type: 'stderr', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
+                logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
+                logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
+                cheese: { type: 'file', filename: 'cheese.log' }
+              },
+              categories: {
+                default: { appenders: ['cheese'], level: 'error' },
+                production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
+              }
+            };
+        var logger = walk8243Logger.nocolor(undefined, options);
+        assert.equal(logger.category, 'MidSummer');
+        assert.equal(logger.isTraceEnabled(), false);
+        assert.equal(logger.isDebugEnabled(), false);
+        assert.equal(logger.isInfoEnabled(), false);
+        assert.equal(logger.isWarnEnabled(), false);
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
+      });
+      it('category is cheese, option set', () => {
+        var options = {
+              appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+              categories: { cheese: { appenders: ['cheese'], level: 'error' } },
+            },
+            expectLoggerOptions = {
+              appenders: {
+                out: { type: 'stdout', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
+                err: { type: 'stderr', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
+                logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
+                logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
+                cheese: { type: 'file', filename: 'cheese.log' }
+              },
+              categories: {
+                default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
+                production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' },
+                cheese: { appenders: ['cheese'], level: 'error' }
+              }
+            };
+        var logger = walk8243Logger.nocolor('cheese', options);
+        assert.equal(logger.category, 'cheese');
+        assert.equal(logger.isTraceEnabled(), false);
+        assert.equal(logger.isDebugEnabled(), false);
+        assert.equal(logger.isInfoEnabled(), false);
+        assert.equal(logger.isWarnEnabled(), false);
+        assert.ok(logger.isErrorEnabled());
+        assert.ok(logger.isFatalEnabled());
+        assert.ok(spyLog4jsConfigure.calledOnce);
+        assert.deepEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
       });
     });
   });
