@@ -14,6 +14,6 @@ const defaults = {
   },
 };
 
-module.exports = logger = (category = '', options = {}) => {
+module.exports = logger = (category = 'MidSummer', options = {}) => {
   return log4js.configure(func.assignSecondLevel(clone(defaults), options)).getLogger(category);
 };
