@@ -5,7 +5,7 @@
   "main": "lib/logger.js",
   "scripts": {
     "start": "node index",
-    "test": "mocha -R nyan --exit"
+    "test": "mocha ./test/mocha -R nyan --exit"
   },
   "repository": {
     "type": "git",
