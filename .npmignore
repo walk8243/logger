@@ -1,15 +1,38 @@
-.*.swp
-._*
-.DS_Store
-.git/
-.hg
-.npmrc
-.lock-wscript
-.svn
-.wafpickle-*
-config.gypi
-CVS
-npm-debug.log
+test/
+
+# Created by https://www.gitignore.io/api/windows,visualstudiocode
+
+### VisualStudioCode ###
+.vscode/*
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
 *.lnk
 
-test/
+
+# End of https://www.gitignore.io/api/windows,visualstudiocode

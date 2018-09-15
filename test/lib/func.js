@@ -1,6 +1,6 @@
 const assert  = require('assert'),
       sinon   = require('sinon');
-const func    = require('../lib/func');
+const func    = require('../../lib/func');
 
 describe('Library func', () => {
   it('内容確認', () => {

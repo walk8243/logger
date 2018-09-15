@@ -2,7 +2,7 @@ const assert  = require('assert'),
       log4js  = require('log4js'),
       clone   = require('rfdc')({ proto: true }),
       sinon   = require('sinon');
-const walk8243Logger  = require('../lib/logger');
+const walk8243Logger  = require('../../lib/logger');
 
 describe.only('Library logger', () => {
   it('内容確認', () => {
