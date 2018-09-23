@@ -1,6 +1,6 @@
 {
   "name": "walk8243-logger",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
@@ -11,7 +11,11 @@
     "type": "git",
     "url": "git+https://github.com/walk8243/walk8243-logger.git"
   },
-  "keywords": [],
+  "keywords": [
+    "walk8243",
+    "logger",
+    "log4js"
+  ],
   "author": "walk8243 (https://qiita.com/walk8243)",
   "license": "MIT",
   "bugs": {

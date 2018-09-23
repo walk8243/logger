@@ -19,4 +19,4 @@ logger.fatal('Walk8243 has fallen asleep!');
 ```
 
 ## License
-`walk8243-logger` is released under the [MIT License](https://github.com/walk8243/walk8243-logger/blob/master/LICENSE)
+`walk8243-logger` is released under the [MIT License](https://github.com/walk8243/walk8243-logger/blob/master/LICENSE.md)
