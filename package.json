@@ -4,8 +4,10 @@
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
+    "mocha": "mocha --exit",
+    "prepublishOnly": "npm update && npm test > /dev/null",
     "start": "node index",
-    "test": "mocha ./test/mocha -R nyan --exit"
+    "test": "npm run mocha -- -R nyan"
   },
   "repository": {
     "type": "git",
