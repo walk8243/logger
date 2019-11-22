@@ -74,6 +74,11 @@ typings/
 .serverless
 
 
-
 ### TypeScript ###
 *.js
+*.js.map
+
+
+### VS Code ###
+!.vscode/launch.json
+!.vscode/tasks.json

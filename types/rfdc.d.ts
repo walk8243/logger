@@ -1,3 +1,7 @@
 declare module 'rfdc' {
-  export default function rfdc(opts: any): any
+  interface opts {
+    proto?: boolean,
+  }
+
+  export default function rfdc(opts?: opts): (o: any) => any;
 }

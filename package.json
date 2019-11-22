@@ -4,6 +4,8 @@
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
+    "build": "yarn run tsc --build",
+    "clean": "yarn run tsc --build --clean",
     "mocha": "mocha --exit test/mocha",
     "prepublishOnly": "npm update && npm test > /dev/null",
     "start": "node index",

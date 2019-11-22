@@ -1,6 +1,8 @@
 import log4js from 'log4js';
-import clone from 'rfdc';
+import rfdc from 'rfdc';
 import * as func from './func';
+
+const clone = rfdc({ proto: true });
 
 const defaults = {
   appenders: {

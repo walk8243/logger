@@ -1,5 +1,7 @@
 export function assignSecondLevel(target: any, source: any) {
-  if(!isAssociativeArray(target)) throw new TypeError(`'target' must be an Object.`);
+  if(!isAssociativeArray(target)) {
+    throw new TypeError(`'target' must be an Object.`);
+  }
   for(let key in source) {
     if(source.hasOwnProperty(key)) {
       if(target.hasOwnProperty(key)) {
