@@ -30,7 +30,8 @@
   },
   "devDependencies": {
     "mocha": "^6.2.2",
-    "sinon": "^7.5.0"
+    "sinon": "^7.5.0",
+    "typescript": "^3.7.2"
   },
   "directories": {
     "test": "test"

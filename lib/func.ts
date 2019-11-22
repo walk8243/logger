@@ -1,10 +1,5 @@
-module.exports = func = {
-  assignSecondLevel,
-  judgeAssociativeArray,
-};
-
-function assignSecondLevel(target, source) {
-  if(!func.judgeAssociativeArray(target)) throw new TypeError(`'target' must be an Object.`);
+export function assignSecondLevel(target: any, source: any) {
+  if(!isAssociativeArray(target)) throw new TypeError(`'target' must be an Object.`);
   for(let key in source) {
     if(source.hasOwnProperty(key)) {
       if(target.hasOwnProperty(key)) {
@@ -17,7 +12,7 @@ function assignSecondLevel(target, source) {
   return target;
 }
 
-function judgeAssociativeArray(target) {
+export function isAssociativeArray(target: any) {
   if(target instanceof Object) {
     if(target instanceof Array
         || target instanceof Function
@@ -30,6 +25,8 @@ function judgeAssociativeArray(target) {
     } else if(target.constructor.constructor.name === 'GeneratorFunction') {
       return false;
     }
-  } else return false;
+  } else {
+    return false;
+  }
   return true;
 }
