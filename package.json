@@ -4,7 +4,7 @@
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
-    "mocha": "mocha --exit",
+    "mocha": "mocha --exit test/mocha",
     "prepublishOnly": "npm update && npm test > /dev/null",
     "start": "node index",
     "test": "npm run mocha -- -R nyan"
@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/walk8243/walk8243-logger#readme",
   "dependencies": {
-    "log4js": "^3.0.5",
-    "rfdc": "^1.1.2"
+    "log4js": "^6.1.0",
+    "rfdc": "^1.1.4"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "sinon": "^6.2.0"
+    "mocha": "^6.2.2",
+    "sinon": "^7.5.0"
   },
   "directories": {
     "test": "test"
