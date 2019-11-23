@@ -1,39 +1,41 @@
 {
-  "name": "walk8243-logger",
-  "version": "2.0.0",
+  "name": "@walk8243/logger",
+  "version": "2.0.2",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
     "build": "yarn run tsc --build",
     "clean": "yarn run tsc --build --clean",
     "cover": "yarn run test && yarn run nyc report --reporter=html --reporter=text",
+    "init": "yarn && yarn run build",
     "mocha": "yarn run nyc mocha test/**/*.ts",
     "node": "node index",
+    "package": "yarn && yarn run clean && yarn run build && yarn run test && npm publish",
     "start": "yarn run build && yarn run node",
     "test": "yarn run clean && yarn run mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/walk8243/walk8243-logger.git"
+    "url": "git+https://github.com/walk8243/logger.git"
   },
   "keywords": [
     "walk8243",
     "logger",
     "log4js"
   ],
-  "author": "walk8243 (https://qiita.com/walk8243)",
+  "author": "walk8243",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/walk8243/walk8243-logger/issues"
+    "url": "https://github.com/walk8243/logger/issues"
   },
-  "homepage": "https://github.com/walk8243/walk8243-logger#readme",
+  "homepage": "https://github.com/walk8243/logger#readme",
   "dependencies": {
     "log4js": "^6.1.0",
     "rfdc": "^1.1.4"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.11",
+    "@types/node": "^12.12.12",
     "@types/sinon": "^7.5.1",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
@@ -44,7 +46,6 @@
   "directories": {
     "test": "test"
   },
-  "private": true,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },

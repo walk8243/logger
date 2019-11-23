@@ -1,13 +1,16 @@
 ### Test ###
-test/
+/test/
 
 
 ### TypeScript ###
 !*.js
+*.js.map
+!/yarn.lock
 
 
 ### VisualStudioCode ###
 .vscode/*
+
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -34,3 +37,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+
+### Other ###
+/index.*
