@@ -1,6 +1,8 @@
-const log4js  = require('log4js'),
-      clone   = require('rfdc')({ proto: true });
-const func  = require('./func');
+import log4js from 'log4js';
+import rfdc from 'rfdc';
+import func from './func';
+
+const clone = rfdc({ proto: true });
 
 const defaults = {
   appenders: {
@@ -15,31 +17,23 @@ const defaults = {
   },
 };
 
-module.exports = logger = {
-  getLogger,
-  def,
-  none,
-  color,
-  nocolor,
-};
-
-function getLogger(category = 'MidSummer', options = {}) {
+export function getLogger(category = 'MidSummer', options = {}) {
   return log4js
           .configure(func.assignSecondLevel(clone(defaults), options))
           .getLogger(category.toString());
 }
 
-function def(category = 'MidSummer') {
-  return logger.color(category);
+export function def(category?: string) {
+  return color(category);
 }
 
-function none(category = 'MidSummer') {
+export function none(category = 'MidSummer') {
   return log4js
           .configure(defaults)
           .getLogger(category.toString());
 }
 
-function color(category = 'MidSummer', options = {}) {
+export function color(category = 'MidSummer', options = {}) {
   var config = func.assignSecondLevel(clone(defaults), {
         appenders: {
           out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
@@ -51,7 +45,7 @@ function color(category = 'MidSummer', options = {}) {
           .getLogger(category.toString());
 }
 
-function nocolor(category = 'MidSummer', options = {}) {
+export function nocolor(category = 'MidSummer', options = {}) {
   var config = func.assignSecondLevel(clone(defaults), {
         appenders: {
           out: { type: 'stdout', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },

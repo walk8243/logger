@@ -1,13 +1,12 @@
-const walk8243Logger  = require('./lib/logger');
+import * as walk8243Logger from './lib/logger';
+import { Logger } from 'log4js';
 
-for(let key of ['getLogger', 'def', 'none', 'color', 'nocolor']) {
-  if(walk8243Logger.hasOwnProperty(key)) {
-    let logger = walk8243Logger[key]();
-    console.log(`\n- ${key}`);
-    console.log(logger);
-    showLogs(logger);
-  }
-}
+['getLogger', 'def', 'none', 'color', 'nocolor'].map((key) => {
+  let logger = walk8243Logger[key as ('getLogger' | 'def' | 'none' | 'color' | 'nocolor')]();
+  console.log(`\n- ${key}`);
+  console.log(logger);
+  showLogs(logger);
+});
 
 let logger = walk8243Logger.def('production');
 console.log(`\n- def`);
@@ -15,7 +14,7 @@ console.log(logger);
 showLogs(logger);
 
 
-function showLogs(logger) {
+function showLogs(logger: Logger) {
   logger.trace('Entering walk8243 testing');
   logger.debug('Walk8243 is coding.');
   logger.info('Walk8243 commits.');

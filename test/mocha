@@ -1,6 +1,0 @@
-#!/usr/bin/env node
-
-describe('Library', () => {
-  require('./lib/func');
-  require('./lib/logger');
-});
