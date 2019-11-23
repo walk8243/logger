@@ -1,5 +1,5 @@
 {
-  "name": "walk8243-logger",
+  "name": "@walk8243/logger",
   "version": "2.0.0",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
@@ -14,19 +14,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/walk8243/walk8243-logger.git"
+    "url": "git+https://github.com/walk8243/logger.git"
   },
   "keywords": [
     "walk8243",
     "logger",
     "log4js"
   ],
-  "author": "walk8243 (https://qiita.com/walk8243)",
+  "author": "walk8243",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/walk8243/walk8243-logger/issues"
+    "url": "https://github.com/walk8243/logger/issues"
   },
-  "homepage": "https://github.com/walk8243/walk8243-logger#readme",
+  "homepage": "https://github.com/walk8243/logger#readme",
   "dependencies": {
     "log4js": "^6.1.0",
     "rfdc": "^1.1.4"
@@ -44,7 +44,6 @@
   "directories": {
     "test": "test"
   },
-  "private": true,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
