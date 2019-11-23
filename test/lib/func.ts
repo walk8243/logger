@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { stub, spy, SinonStub, SinonSpy } from 'sinon';
-import * as func from '../../lib/func';
+import func from '../../lib/func';
 
 describe('Library func', () => {
   it('内容確認', () => {
@@ -66,24 +66,18 @@ describe('Library func', () => {
         var result = func.assignSecondLevel(target, source);
         assert.deepEqual(result, expectAssignTrue);
         assert.ok(spyTargetHasOwnProperty.calledOnce);
-        assert.ok(spySourceHasOwnProperty.calledOnce);
         assert.deepEqual(spyTargetHasOwnProperty.args, [['fuga']]);
-        assert.deepEqual(spySourceHasOwnProperty.args, [['fuga']]);
       });
       it('sourceの中身をtargetが持っていない', () => {
         var result = func.assignSecondLevel(targetNoFuga, source);
         assert.deepEqual(result, expectAssignFalse);
         assert.ok(spyTargetNoFugaHasOwnProperty.calledOnce);
-        assert.ok(spySourceHasOwnProperty.calledOnce);
         assert.deepEqual(spyTargetNoFugaHasOwnProperty.args, [['fuga']]);
-        assert.deepEqual(spySourceHasOwnProperty.args, [['fuga']]);
       });
       it('第二引数の方がkeyが多い', () => {
         var result = func.assignSecondLevel(source, target);
         assert.deepEqual(result, expectAssignRevese);
-        assert.ok(spyTargetHasOwnProperty.calledTwice);
         assert.ok(spySourceHasOwnProperty.calledTwice);
-        assert.deepEqual(spyTargetHasOwnProperty.args, [['fuga'], ['hoge']]);
         assert.deepEqual(spySourceHasOwnProperty.args, [['fuga'], ['hoge']]);
       });
     });

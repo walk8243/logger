@@ -1,6 +1,6 @@
 import log4js from 'log4js';
 import rfdc from 'rfdc';
-import * as func from './func';
+import func from './func';
 
 const clone = rfdc({ proto: true });
 
