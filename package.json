@@ -1,6 +1,6 @@
 {
   "name": "walk8243-logger",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "cover": "yarn run test && yarn run nyc report --reporter=html --reporter=text",
     "mocha": "yarn run nyc mocha test/**/*.ts",
     "node": "node index",
-    "prepublishOnly": "npm update && npm test > /dev/null",
     "start": "yarn run build && yarn run node",
     "test": "yarn run clean && yarn run mocha"
   },
@@ -46,6 +45,9 @@
     "test": "test"
   },
   "private": true,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "nyc": {
     "extension": [
       ".ts"
