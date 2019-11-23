@@ -1,6 +1,6 @@
 {
   "name": "@walk8243/logger",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
