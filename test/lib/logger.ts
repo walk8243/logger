@@ -7,12 +7,13 @@ const clone = rfdc({ proto: true });
 
 describe('Library logger', () => {
   it('内容確認', () => {
-    assert.deepStrictEqual(Object.keys(walk8243Logger), ['getLogger', 'def', 'none', 'color', 'nocolor']);
+    assert.deepStrictEqual(Object.keys(walk8243Logger), ['getLogger', 'def', 'none', 'color', 'nocolor', 'log4js']);
     assert.strictEqual(typeof walk8243Logger.getLogger, 'function');
     assert.strictEqual(typeof walk8243Logger.def, 'function');
     assert.strictEqual(typeof walk8243Logger.none, 'function');
     assert.strictEqual(typeof walk8243Logger.color, 'function');
     assert.strictEqual(typeof walk8243Logger.nocolor, 'function');
+    assert.deepStrictEqual(walk8243Logger.log4js, log4js);
   });
 
   describe('Logger option', () => {
