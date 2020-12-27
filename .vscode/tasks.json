@@ -5,12 +5,14 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "build",
+      "script": "build-debug",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": []
+      "problemMatcher": [],
+      "label": "npm: build-debug",
+      "detail": "yarn run tsc --build"
     }
   ]
 }

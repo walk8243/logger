@@ -89,6 +89,8 @@ typings/
 
 
 ### TypeScript ###
+*.ts
+!*.d.ts
 !*.js
 *.js.map
 !/yarn.lock
