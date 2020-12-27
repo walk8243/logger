@@ -13,6 +13,7 @@ const defaults = {
   },
   categories: {
     default: { appenders: ['logOut', 'logErr'], level: 'ALL' },
+    development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
     production: { appenders: ['logOut', 'logErr'], level: 'INFO' },
   },
 };
