@@ -1,13 +1,14 @@
 {
   "name": "@walk8243/logger",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "log4jsの設定にデフォルトを設ける",
   "main": "lib/logger.js",
   "scripts": {
-    "build": "yarn run tsc --build",
+    "build": "yarn run tsc --sourceMap false --removeComments true",
+    "build-debug": "yarn run tsc --build",
     "clean": "yarn run tsc --build --clean",
     "cover": "yarn run test && yarn run nyc report --reporter=html --reporter=text",
-    "init": "yarn && yarn run build",
+    "init": "yarn && yarn run build-debug",
     "mocha": "yarn run nyc mocha test/**/*.ts",
     "node": "node index",
     "package": "yarn && yarn run test && yarn run build && npm publish",

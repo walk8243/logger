@@ -77,6 +77,8 @@ typings/
 ### TypeScript ###
 *.js
 *.js.map
+*.d.ts
+!types/*.d.ts
 
 
 ### VS Code ###
