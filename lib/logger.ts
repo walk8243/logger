@@ -57,3 +57,7 @@ export function nocolor(category = 'MidSummer', options = {}) {
           .configure(func.assignSecondLevel(config, options))
           .getLogger(category.toString());
 }
+
+export {
+  log4js,
+};
