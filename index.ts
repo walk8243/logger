@@ -1,18 +1,13 @@
-import * as walk8243Logger from './lib/logger';
+import { getLogger } from './lib/logger';
 import { Logger } from 'log4js';
 
-['getLogger', 'def', 'none', 'color', 'nocolor'].map((key) => {
-  let logger = walk8243Logger[key as ('getLogger' | 'def' | 'none' | 'color' | 'nocolor')]();
-  console.log(`\n- ${key}`);
-  console.log(logger);
+for (const env of [ undefined, 'default', 'debug', 'development', 'production' ]) {
+  const logger = getLogger(env);
+  console.log(`============= ${env} =============`);
   showLogs(logger);
-});
-
-let logger = walk8243Logger.def('production');
-console.log(`\n- def`);
-console.log(logger);
-showLogs(logger);
-
+  console.log('==========================');
+  console.log();
+}
 
 function showLogs(logger: Logger) {
   logger.trace('Entering walk8243 testing');
