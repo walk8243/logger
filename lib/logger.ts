@@ -1,6 +1,6 @@
 import log4js from 'log4js';
 
-log4js.configure({
+export const setting: log4js.Configuration = {
   appenders: {
     console: { type: 'console' },
     _longOut: { type: 'stdout', layout: { type: 'basic' } },
@@ -19,7 +19,9 @@ log4js.configure({
     production: { appenders: ['shortOut', 'shortErr'], level: 'INFO' },
     console: { appenders: ['console'], level: 'ALL' },
   },
-});
+};
+
+log4js.configure(setting);
 
 export function getLogger(category: string = 'MidSummer') {
   return log4js.getLogger(category);
