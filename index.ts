@@ -5,7 +5,7 @@ for (const env of [ undefined, 'default', 'debug', 'development', 'production' ]
   const logger = getLogger(env);
   console.log(`============= ${env} =============`);
   showLogs(logger);
-  console.log('==========================');
+  console.log('='.repeat(String(env).length + 28));
   console.log();
 }
 
