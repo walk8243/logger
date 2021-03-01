@@ -16,4 +16,8 @@ function showLogs(logger: Logger) {
   logger.warn('Walk8243 looked sleepy.');
   logger.error('Walk8243 is drowsy!');
   logger.fatal('Walk8243 has fallen asleep!');
+
+  logger.info({ str: 'value', num: 46, obj: { key: 'value' } });
+  logger.error(new Error('dummy'));
+  logger.info('first\nsecond', true, 46, { key: 'value' }, [ 'aaa', 'bbb', 'ccc' ], undefined, null, Symbol('walk8243'), function() { return 'walk8243'; });
 }
