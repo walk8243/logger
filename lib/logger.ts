@@ -46,4 +46,4 @@ export function getLogger(category: string = 'MidSummer') {
   return log4js.getLogger(category);
 }
 
-export const logger = getLogger();
+export const logger = getLogger(process.env['LOGGER_CATEGORY'] ?? process.env['NODE_ENV'] ?? process.env['ENV']);

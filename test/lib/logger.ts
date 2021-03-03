@@ -1,624 +1,166 @@
 import * as assert from 'assert';
-import sinon from 'sinon';
+import { stub, reset, restore } from 'sinon';
 import log4js from 'log4js';
-import rfdc from 'rfdc';
+import Log4jsLogger from 'log4js/lib/logger';
 import * as walk8243Logger from '../../lib/logger';
-const clone = rfdc({ proto: true });
 
 describe('Library logger', () => {
-  it('内容確認', () => {
-    assert.deepStrictEqual(Object.keys(walk8243Logger), ['getLogger', 'def', 'none', 'color', 'nocolor', 'log4js']);
-    assert.strictEqual(typeof walk8243Logger.getLogger, 'function');
-    assert.strictEqual(typeof walk8243Logger.def, 'function');
-    assert.strictEqual(typeof walk8243Logger.none, 'function');
-    assert.strictEqual(typeof walk8243Logger.color, 'function');
-    assert.strictEqual(typeof walk8243Logger.nocolor, 'function');
-    assert.deepStrictEqual(walk8243Logger.log4js, log4js);
+  beforeEach(() => {
+    reset();
+  });
+  after(() => {
+    restore();
   });
 
-  describe('Logger option', () => {
-    let spyLog4jsConfigure: sinon.SinonSpy<[log4js.Configuration], log4js.Log4js>;
-    const loggerDefaultOption = {
-            appenders: {
-              out: { type: 'stdout' },
-              err: { type: 'stderr' },
-              logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-              logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
-            },
-            categories: {
-              default: { appenders: ['logOut', 'logErr'], level: 'ALL' },
-              development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-              production: { appenders: ['logOut', 'logErr'], level: 'INFO' },
-            },
-          };
-    before(() => {
-      spyLog4jsConfigure = sinon.spy(log4js, 'configure');
+  it('内容確認', () => {
+    assert.deepStrictEqual(Object.keys(walk8243Logger), ['setting', 'getLogger', 'logger']);
+    assert.strictEqual(typeof walk8243Logger.setting, 'object');
+    assert.strictEqual(typeof walk8243Logger.getLogger, 'function');
+    assert.strictEqual(typeof walk8243Logger.logger, 'object');
+    assert.ok(walk8243Logger.logger instanceof Log4jsLogger);
+  });
+
+  describe('logger', () => {
+    beforeEach(() => {
+      delete process.env['LOGGER_CATEGORY'];
+      delete process.env['NODE_ENV'];
+      delete process.env['ENV'];
+      delete require.cache[require.resolve('../../lib/logger')];
     });
     after(() => {
-      spyLog4jsConfigure.restore();
-    });
-    afterEach(() => {
-      spyLog4jsConfigure.resetHistory();
+      delete require.cache[require.resolve('../../lib/logger')];
+      require('../../lib/logger');
     });
 
-    describe('getLogger', () => {
-      it('no args', () => {
-        const logger = walk8243Logger.getLogger();
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is default', () => {
-        const logger = walk8243Logger.getLogger('default');
-        assert.strictEqual((logger as any).category, 'default');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is production', () => {
-        const logger = walk8243Logger.getLogger('production');
-        assert.strictEqual((logger as any).category, 'production');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is other string', () => {
-        const logger = walk8243Logger.getLogger('other');
-        assert.strictEqual((logger as any).category, 'other');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is number', () => {
-        const logger = walk8243Logger.getLogger(123 as any);
-        assert.strictEqual((logger as any).category, '123');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is function', () => {
-        const logger = walk8243Logger.getLogger((() => true) as any);
-        assert.strictEqual((logger as any).category, '() => true');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { default: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = clone(loggerDefaultOption);
-        for(let key of ['appenders', 'categories']) {
-          Object.assign(expectLoggerOptions[key], (options as any)[key]);
+    it('環境変数で指定しない', () => {
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'MidSummer');
+    });
+
+    it('LOGGER_CATEGORYが指定されている', () => {
+      process.env['LOGGER_CATEGORY'] = 'LOGGER_CATEGORY';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'LOGGER_CATEGORY');
+    });
+    it('NODE_ENVが指定されている', () => {
+      process.env['NODE_ENV'] = 'NODE_ENV';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'NODE_ENV');
+    });
+    it('ENVが指定されている', () => {
+      process.env['ENV'] = 'ENV';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'ENV');
+    });
+
+    it('LOGGER_CATEGORYとNODE_ENVが指定されている', () => {
+      process.env['LOGGER_CATEGORY'] = 'LOGGER_CATEGORY';
+      process.env['NODE_ENV'] = 'NODE_ENV';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'LOGGER_CATEGORY');
+    });
+    it('LOGGER_CATEGORYとENVが指定されている', () => {
+      process.env['LOGGER_CATEGORY'] = 'LOGGER_CATEGORY';
+      process.env['ENV'] = 'ENV';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'LOGGER_CATEGORY');
+    });
+    it('NODE_ENVとENVが指定されている', () => {
+      process.env['NODE_ENV'] = 'NODE_ENV';
+      process.env['ENV'] = 'ENV';
+      const logger = require('../../lib/logger').logger;
+      assert.strictEqual(logger['category'], 'NODE_ENV');
+    });
+  });
+
+  describe('getLogger', () => {
+    it('default', () => {
+      const logger = walk8243Logger.getLogger('default');
+      assert.strictEqual(logger.category, 'default');
+      assert.strictEqual(logger.level, log4js.levels.ALL);
+    });
+    it('debug', () => {
+      const logger = walk8243Logger.getLogger('debug');
+      assert.strictEqual(logger.category, 'debug');
+      assert.strictEqual(logger.level, log4js.levels.ALL);
+    });
+    it('development', () => {
+      const logger = walk8243Logger.getLogger('development');
+      assert.strictEqual(logger.category, 'development');
+      assert.strictEqual(logger.level, log4js.levels.DEBUG);
+    });
+    it('production', () => {
+      const logger = walk8243Logger.getLogger('production');
+      assert.strictEqual(logger.category, 'production');
+      assert.strictEqual(logger.level, log4js.levels.INFO);
+    });
+    it('console', () => {
+      const logger = walk8243Logger.getLogger('console');
+      assert.strictEqual(logger.category, 'console');
+      assert.strictEqual(logger.level, log4js.levels.ALL);
+    });
+    it('undefined', () => {
+      const logger = walk8243Logger.getLogger(undefined);
+      assert.strictEqual(logger.category, 'MidSummer');
+      assert.strictEqual(logger.level, log4js.levels.ALL);
+    });
+  });
+  
+  describe('configure', () => {
+    let tmpLog4js: log4js.Log4js;
+    beforeEach(() => {
+      delete require.cache[require.resolve('../../lib/logger')];
+      delete require.cache[require.resolve('log4js')];
+      tmpLog4js = require('log4js');
+    });
+
+    it('require', () => {
+      const stubLog4jsConfigure = stub(tmpLog4js, 'configure');
+
+      assert.ok(stubLog4jsConfigure.notCalled);
+      require('../../lib/logger');
+      assert.ok(stubLog4jsConfigure.calledOnce);
+      assert.deepStrictEqual(stubLog4jsConfigure.firstCall.args, [walk8243Logger.setting]);
+
+      stubLog4jsConfigure.restore();
+    });
+
+    it('log4js', () => {
+      let logger: log4js.Logger;
+
+      logger = log4js.getLogger();
+      logger.info('aaaa');
+
+      const setting = require('../../lib/logger').setting;
+      logger = log4js.getLogger();
+      logger.info('aaaa');
+
+      log4js.configure({
+        appenders: {
+          test: { type: 'stdout', layout: { type: 'messagePassThrough' } }
+        },
+        categories: {
+          default: { appenders: ['test'], level: 'ALL' }
         }
-        const logger = walk8243Logger.getLogger(undefined, options);
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
       });
-      it('category is cheese, option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { cheese: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = clone(loggerDefaultOption);
-        for(let key of ['appenders', 'categories']) {
-          Object.assign(expectLoggerOptions[key], (options as any)[key]);
-        }
-        const logger = walk8243Logger.getLogger('cheese', options);
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
+      logger = log4js.getLogger();
+      logger.info('aaaa');
+      
+      log4js.configure(setting);
+      logger = log4js.getLogger();
+      logger.info('aaaa');
+      logger = log4js.getLogger('development');
+      logger.info('aaaa');
     });
 
-    describe('def', () => {
-      it('no args', () => {
-        const logger = walk8243Logger.def();
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is default', () => {
-        const logger = walk8243Logger.def('default');
-        assert.strictEqual((logger as any).category, 'default');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is production', () => {
-        const logger = walk8243Logger.def('production');
-        assert.strictEqual((logger as any).category, 'production');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is other string', () => {
-        const logger = walk8243Logger.def('other');
-        assert.strictEqual((logger as any).category, 'other');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is number', () => {
-        const logger = walk8243Logger.def(123 as any);
-        assert.strictEqual((logger as any).category, '123');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is function', () => {
-        const logger = walk8243Logger.def((() => true) as any);
-        assert.strictEqual((logger as any).category, '() => true');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { default: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-                appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' }
-                },
-                categories: {
-                  default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
-                }
-              };
-        const logger = (walk8243Logger as any).def(undefined, options);
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
-      it('category is cheese, option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { cheese: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-                appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' }
-                },
-                categories: {
-                  default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
-                }
-              };
-        const logger = (walk8243Logger as any).def('cheese', options);
-        assert.strictEqual((logger as any).category, 'cheese');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
-    });
+    it('configure以前', () => {
+      const logger1 = log4js.getLogger('development');
+      logger1.info('aaaa');
 
-    describe('none', () => {
-      it('no args', () => {
-        const logger = walk8243Logger.none();
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is default', () => {
-        const logger = walk8243Logger.none('default');
-        assert.strictEqual((logger as any).category, 'default');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is production', () => {
-        const logger = walk8243Logger.none('production');
-        assert.strictEqual((logger as any).category, 'production');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is other string', () => {
-        const logger = walk8243Logger.none('other');
-        assert.strictEqual((logger as any).category, 'other');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is number', () => {
-        const logger = walk8243Logger.none(123 as any);
-        assert.strictEqual((logger as any).category, '123');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is function', () => {
-        const logger = walk8243Logger.none((() => true) as any);
-        assert.strictEqual((logger as any).category, '() => true');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { default: { appenders: ['cheese'], level: 'error' } },
-              };
-        const logger = (walk8243Logger as any).none(undefined, options);
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], loggerDefaultOption);
-      });
-      it('category is cheese, option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { cheese: { appenders: ['cheese'], level: 'error' } },
-              };
-        const logger = (walk8243Logger as any).none('cheese', options);
-        assert.strictEqual((logger as any).category, 'cheese');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], loggerDefaultOption);
-      });
-    });
-
-    describe('color', () => {
-      it('no args', () => {
-        const logger = walk8243Logger.color();
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is default', () => {
-        const logger = walk8243Logger.color('default');
-        assert.strictEqual((logger as any).category, 'default');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is production', () => {
-        const logger = walk8243Logger.color('production');
-        assert.strictEqual((logger as any).category, 'production');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is other string', () => {
-        const logger = walk8243Logger.color('other');
-        assert.strictEqual((logger as any).category, 'other');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is number', () => {
-        const logger = walk8243Logger.color(123 as any);
-        assert.strictEqual((logger as any).category, '123');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is function', () => {
-        const logger = walk8243Logger.color((() => true) as any);
-        assert.strictEqual((logger as any).category, '() => true');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { default: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-                appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
-                  cheese: { type: 'file', filename: 'cheese.log' }
-                },
-                categories: {
-                  default: { appenders: ['cheese'], level: 'error' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
-                }
-              };
-        const logger = walk8243Logger.color(undefined, options);
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
-      it('category is cheese, option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { cheese: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-              appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '%[[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p]%] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
-                  cheese: { type: 'file', filename: 'cheese.log' }
-                },
-                categories: {
-                  default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' },
-                  cheese: { appenders: ['cheese'], level: 'error' }
-                }
-              };
-        const logger = walk8243Logger.color('cheese', options);
-        assert.strictEqual((logger as any).category, 'cheese');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
-    });
-
-    describe('nocolor', () => {
-      it('no args', () => {
-        const logger = walk8243Logger.nocolor();
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is default', () => {
-        const logger = walk8243Logger.nocolor('default');
-        assert.strictEqual((logger as any).category, 'default');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is production', () => {
-        const logger = walk8243Logger.nocolor('production');
-        assert.strictEqual((logger as any).category, 'production');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is other string', () => {
-        const logger = walk8243Logger.nocolor('other');
-        assert.strictEqual((logger as any).category, 'other');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-      });
-      it('category is number', () => {
-        const logger = walk8243Logger.nocolor(123 as any);
-        assert.strictEqual((logger as any).category, '123');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('category is function', () => {
-        const logger = walk8243Logger.nocolor((() => true) as any);
-        assert.strictEqual((logger as any).category, '() => true');
-        assert.ok(logger.isTraceEnabled());
-        assert.ok(logger.isDebugEnabled());
-        assert.ok(logger.isInfoEnabled());
-        assert.ok(logger.isWarnEnabled());
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-      });
-      it('option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { default: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-                appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
-                  cheese: { type: 'file', filename: 'cheese.log' }
-                },
-                categories: {
-                  default: { appenders: ['cheese'], level: 'error' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' }
-                }
-              };
-        const logger = walk8243Logger.nocolor(undefined, options);
-        assert.strictEqual((logger as any).category, 'MidSummer');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
-      it('category is cheese, option set', () => {
-        const options = {
-                appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
-                categories: { cheese: { appenders: ['cheese'], level: 'error' } },
-              };
-        const expectLoggerOptions = {
-                appenders: {
-                  out: { type: 'stdout', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
-                  err: { type: 'stderr', layout: { type: 'pattern', pattern: '[%d{yyyy/MM/dd hh:mm:ss.SSS}] [%p] - %m' } },
-                  logOut: { type: 'logLevelFilter', appender: 'out', level: 'TRACE', maxLevel: 'INFO' },
-                  logErr: { type: 'logLevelFilter', appender: 'err', level: 'WARN' },
-                  cheese: { type: 'file', filename: 'cheese.log' }
-                },
-                categories: {
-                  default: { appenders: [ 'logOut', 'logErr' ], level: 'ALL' },
-                  development: { appenders: ['logOut', 'logErr'], level: 'DEBUG' },
-                  production: { appenders: [ 'logOut', 'logErr' ], level: 'INFO' },
-                  cheese: { appenders: ['cheese'], level: 'error' }
-                }
-              };
-        const logger = walk8243Logger.nocolor('cheese', options);
-        assert.strictEqual((logger as any).category, 'cheese');
-        assert.strictEqual(logger.isTraceEnabled(), false);
-        assert.strictEqual(logger.isDebugEnabled(), false);
-        assert.strictEqual(logger.isInfoEnabled(), false);
-        assert.strictEqual(logger.isWarnEnabled(), false);
-        assert.ok(logger.isErrorEnabled());
-        assert.ok(logger.isFatalEnabled());
-        assert.ok(spyLog4jsConfigure.calledOnce);
-        assert.deepStrictEqual(spyLog4jsConfigure.getCall(0).args[0], expectLoggerOptions);
-      });
+      require('../../lib/logger');
+      const logger2 = log4js.getLogger('development');
+      logger1.info('aaaa');
+      logger2.info('aaaa');
     });
   });
 });
