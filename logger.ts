@@ -12,7 +12,7 @@ log4js.addLayout('walk8243/short', (config) => {
 			} else if(typeof d == 'function' || typeof d == 'symbol') {
 				return d.toString();
 			} else {
-				return d;
+				return String(d);
 			}
 		}).join(' ');
 		return `[${logEvent.level.levelStr}] ${str}`;

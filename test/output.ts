@@ -93,6 +93,80 @@ describe('output', () => {
 		assert.strictEqual(spyStderrWrite.callCount, 1);
 	});
 
+	it('development', () => {
+		const logger = getLogger('development');
+
+		logger.info('walk8243');
+		checkShortOutFormat(levels.INFO, 'development', 'walk8243');
+		logger.info('first\nsecond');
+		checkShortOutFormat(levels.INFO, 'development', 'first second');
+		logger.info(true);
+		checkShortOutFormat(levels.INFO, 'development', 'true');
+		logger.info(46);
+		checkShortOutFormat(levels.INFO, 'development', '46');
+		logger.info({ key: 'value' });
+		checkShortOutFormat(levels.INFO, 'development', '{"key":"value"}');
+		logger.info([ 'aaa', 'bbb', 'ccc' ]);
+		checkShortOutFormat(levels.INFO, 'development', '\\["aaa","bbb","ccc"\\]');
+		logger.info(undefined);
+		checkShortOutFormat(levels.INFO, 'development', 'undefined');
+		logger.info(null);
+		checkShortOutFormat(levels.INFO, 'development', 'null');
+
+		logger.info(Symbol('walk8243'));
+		checkShortOutFormat(levels.INFO, 'development', 'Symbol\\(walk8243\\)');
+		logger.info(function() { return 'walk8243'; });
+		checkShortOutFormat(levels.INFO, 'development', 'function \\(\\) { return \'walk8243\'; }');
+		logger.info(new Error('walk8243'));
+		checkShortOutFormat(levels.INFO, 'development', 'Error: walk8243');
+
+		logger.info('walk8243', true, 46, { key: 'value' });
+		checkShortOutFormat(levels.INFO, 'development', 'walk8243 true 46 {"key":"value"}');
+
+		logger.error('walk8243');
+		checkShortErrFormat(levels.ERROR, 'development', 'walk8243');
+
+		assert.strictEqual(spyStdoutWrite.callCount, 12);
+		assert.strictEqual(spyStderrWrite.callCount, 1);
+	});
+
+	it('production', () => {
+		const logger = getLogger('production');
+
+		logger.info('walk8243');
+		checkShortOutFormat(levels.INFO, 'production', 'walk8243');
+		logger.info('first\nsecond');
+		checkShortOutFormat(levels.INFO, 'production', 'first second');
+		logger.info(true);
+		checkShortOutFormat(levels.INFO, 'production', 'true');
+		logger.info(46);
+		checkShortOutFormat(levels.INFO, 'production', '46');
+		logger.info({ key: 'value' });
+		checkShortOutFormat(levels.INFO, 'production', '{"key":"value"}');
+		logger.info([ 'aaa', 'bbb', 'ccc' ]);
+		checkShortOutFormat(levels.INFO, 'production', '\\["aaa","bbb","ccc"\\]');
+		logger.info(undefined);
+		checkShortOutFormat(levels.INFO, 'production', 'undefined');
+		logger.info(null);
+		checkShortOutFormat(levels.INFO, 'production', 'null');
+
+		logger.info(Symbol('walk8243'));
+		checkShortOutFormat(levels.INFO, 'production', 'Symbol\\(walk8243\\)');
+		logger.info(function() { return 'walk8243'; });
+		checkShortOutFormat(levels.INFO, 'production', 'function \\(\\) { return \'walk8243\'; }');
+		logger.info(new Error('walk8243'));
+		checkShortOutFormat(levels.INFO, 'production', 'Error: walk8243');
+
+		logger.info('walk8243', true, 46, { key: 'value' });
+		checkShortOutFormat(levels.INFO, 'production', 'walk8243 true 46 {"key":"value"}');
+
+		logger.error('walk8243');
+		checkShortErrFormat(levels.ERROR, 'production', 'walk8243');
+
+		assert.strictEqual(spyStdoutWrite.callCount, 12);
+		assert.strictEqual(spyStderrWrite.callCount, 1);
+	});
+
 	function checkBasicOutFormat(level: Level, tag: string, msg: string) {
 		const target = spyStdoutWrite.lastCall.args[0];
 		checkBasicLogFormat(level, tag, msg, target);
@@ -134,6 +208,21 @@ describe('output', () => {
 
 		checkLogFormat(
 			new RegExp(`^\\x1B\\[${String(cn)}m\\[\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}\\] \\[${level.levelStr}\\] ${tag} - \\x1B\\[39m${msg}\\n$`),
+			target
+		);
+	}
+
+	function checkShortOutFormat(level: Level, tag: string, msg: string) {
+		const target = spyStdoutWrite.lastCall.args[0];
+		checkShortLogFormat(level, tag, msg, target);
+	}
+	function checkShortErrFormat(level: Level, tag: string, msg: string) {
+		const target = spyStderrWrite.lastCall.args[0];
+		checkShortLogFormat(level, tag, msg, target);
+	}
+	function checkShortLogFormat(level: Level, tag: string, msg: string, target: string) {
+		checkLogFormat(
+			new RegExp(`^\\[${level.levelStr}\\] ${msg}\\n$`),
 			target
 		);
 	}
