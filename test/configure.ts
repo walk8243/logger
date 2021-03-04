@@ -9,6 +9,10 @@ describe('configure', () => {
 		delete require.cache[require.resolve('log4js')];
 		log4js = require('log4js');
 	});
+	after(() => {
+		delete require.cache[require.resolve('../logger')];
+		delete require.cache[require.resolve('log4js')];
+	});
 
 	it('require', () => {
 		const stubLog4jsConfigure = stub(log4js, 'configure' as any);

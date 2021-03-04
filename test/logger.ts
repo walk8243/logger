@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { stub, reset, restore } from 'sinon';
+import { reset, restore } from 'sinon';
 import log4js from 'log4js';
 import Log4jsLogger from 'log4js/lib/logger';
 import * as walk8243Logger from '../logger';
