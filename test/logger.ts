@@ -41,6 +41,11 @@ describe('Library logger', () => {
 			assert.strictEqual(logger.category, 'production');
 			assert.strictEqual(logger.level, log4js.levels.INFO);
 		});
+		it('color', () => {
+			const logger = walk8243Logger.getLogger('color');
+			assert.strictEqual(logger.category, 'color');
+			assert.strictEqual(logger.level, log4js.levels.ALL);
+		});
 		it('console', () => {
 			const logger = walk8243Logger.getLogger('console');
 			assert.strictEqual(logger.category, 'console');

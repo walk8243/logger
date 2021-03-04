@@ -21,11 +21,14 @@ log4js.addLayout('walk8243/short', (config) => {
 
 export const setting: log4js.Configuration = {
 	appenders: {
-		console: { type: 'console' },
+		_colorOut: { type: 'stdout', layout: { type: 'color' } },
+		_colorErr: { type: 'stderr', layout: { type: 'color' } },
 		_longOut: { type: 'stdout', layout: { type: 'basic' } },
 		_longErr: { type: 'stderr', layout: { type: 'basic' } },
 		_shortOut: { type: 'stdout', layout: { type: 'walk8243/short' } },
 		_shortErr: { type: 'stderr', layout: { type: 'walk8243/short' } },
+		colorOut: { type: 'logLevelFilter', appender: '_colorOut', level: 'TRACE', maxLevel: 'INFO' },
+		colorErr: { type: 'logLevelFilter', appender: '_colorErr', level: 'WARN' },
 		longOut: { type: 'logLevelFilter', appender: '_longOut', level: 'TRACE', maxLevel: 'INFO' },
 		longErr: { type: 'logLevelFilter', appender: '_longErr', level: 'WARN' },
 		shortOut: { type: 'logLevelFilter', appender: '_shortOut', level: 'TRACE', maxLevel: 'INFO' },
@@ -33,10 +36,10 @@ export const setting: log4js.Configuration = {
 	},
 	categories: {
 		default: { appenders: ['longOut', 'longErr'], level: 'ALL' },
-		debug: { appenders: ['console'], level: 'ALL' },
+		debug: { appenders: ['colorOut', 'colorErr'], level: 'ALL' },
 		development: { appenders: ['shortOut', 'shortErr'], level: 'DEBUG' },
 		production: { appenders: ['shortOut', 'shortErr'], level: 'INFO' },
-		console: { appenders: ['console'], level: 'ALL' },
+		color: { appenders: ['colorOut', 'colorErr'], level: 'ALL' },
 	},
 };
 
