@@ -21,8 +21,8 @@ log4js.addLayout('walk8243/short', (config) => {
 
 export const setting: log4js.Configuration = {
 	appenders: {
-		_colorOut: { type: 'stdout', layout: { type: 'color' } },
-		_colorErr: { type: 'stderr', layout: { type: 'color' } },
+		_colorOut: { type: 'stdout', layout: { type: 'coloured' } },
+		_colorErr: { type: 'stderr', layout: { type: 'coloured' } },
 		_longOut: { type: 'stdout', layout: { type: 'basic' } },
 		_longErr: { type: 'stderr', layout: { type: 'basic' } },
 		_shortOut: { type: 'stdout', layout: { type: 'walk8243/short' } },
