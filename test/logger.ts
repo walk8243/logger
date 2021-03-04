@@ -29,7 +29,7 @@ describe('Library logger', () => {
 		it('debug', () => {
 			const logger = walk8243Logger.getLogger('debug');
 			assert.strictEqual(logger.category, 'debug');
-			assert.strictEqual(logger.level, log4js.levels.ALL);
+			assert.strictEqual(logger.level, log4js.levels.DEBUG);
 		});
 		it('development', () => {
 			const logger = walk8243Logger.getLogger('development');
