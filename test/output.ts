@@ -19,189 +19,199 @@ describe('output', () => {
 		spyStderrWrite.restore();
 	});
 
-	it('default', () => {
-		const logger = getLogger();
-
-		logger.info('walk8243');
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243');
-		logger.info('first\nsecond');
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'first\nsecond');
-		logger.info(true);
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'true');
-		logger.info(46);
-		checkBasicOutFormat(levels.INFO, 'MidSummer', '46');
-		logger.info({ key: 'value' });
-		checkBasicOutFormat(levels.INFO, 'MidSummer', '{ key: \'value\' }');
-		logger.info([ 'aaa', 'bbb', 'ccc' ]);
-		checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
-		logger.info(undefined);
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'undefined');
-		logger.info(null);
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'null');
-
-		logger.info(Symbol('walk8243'));
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'Symbol\\(walk8243\\)');
-		logger.info(function() { return 'walk8243'; });
-		checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
-		logger.info(new Error('walk8243'));
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'Error: walk8243(\n\\s+at .+)+');
-
-		logger.info('walk8243', true, 46, { key: 'value' });
-		checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243 true 46 { key: \'value\' }');
-
-		logger.error('walk8243');
-		checkBasicErrFormat(levels.ERROR, 'MidSummer', 'walk8243');
-
-		assert.strictEqual(spyStdoutWrite.callCount, 12);
-		assert.strictEqual(spyStderrWrite.callCount, 1);
+	describe('default', () => {
+		it('出力内容', () => {
+			const logger = getLogger();
+	
+			logger.info('walk8243');
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243');
+			logger.info('first\nsecond');
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'first\nsecond');
+			logger.info(true);
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'true');
+			logger.info(46);
+			checkBasicOutFormat(levels.INFO, 'MidSummer', '46');
+			logger.info({ key: 'value' });
+			checkBasicOutFormat(levels.INFO, 'MidSummer', '{ key: \'value\' }');
+			logger.info([ 'aaa', 'bbb', 'ccc' ]);
+			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
+			logger.info(undefined);
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'undefined');
+			logger.info(null);
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'null');
+	
+			logger.info(Symbol('walk8243'));
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Symbol\\(walk8243\\)');
+			logger.info(function() { return 'walk8243'; });
+			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
+			logger.info(new Error('walk8243'));
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Error: walk8243(\n\\s+at .+)+');
+	
+			logger.info('walk8243', true, 46, { key: 'value' });
+			checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243 true 46 { key: \'value\' }');
+	
+			logger.error('walk8243');
+			checkBasicErrFormat(levels.ERROR, 'MidSummer', 'walk8243');
+	
+			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
 	});
 
-	it('debug', () => {
-		const logger = getLogger('debug');
-
-		logger.info('walk8243');
-		checkColorOutFormat(levels.INFO, 'debug', 'walk8243');
-		logger.info('first\nsecond');
-		checkColorOutFormat(levels.INFO, 'debug', 'first\nsecond');
-		logger.info(true);
-		checkColorOutFormat(levels.INFO, 'debug', 'true');
-		logger.info(46);
-		checkColorOutFormat(levels.INFO, 'debug', '46');
-		logger.info({ key: 'value' });
-		checkColorOutFormat(levels.INFO, 'debug', '{ key: \'value\' }');
-		logger.info([ 'aaa', 'bbb', 'ccc' ]);
-		checkColorOutFormat(levels.INFO, 'debug', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
-		logger.info(undefined);
-		checkColorOutFormat(levels.INFO, 'debug', 'undefined');
-		logger.info(null);
-		checkColorOutFormat(levels.INFO, 'debug', 'null');
-
-		logger.info(Symbol('walk8243'));
-		checkColorOutFormat(levels.INFO, 'debug', 'Symbol\\(walk8243\\)');
-		logger.info(function() { return 'walk8243'; });
-		checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
-		logger.info(new Error('walk8243'));
-		checkColorOutFormat(levels.INFO, 'debug', 'Error: walk8243(\n\\s+at .+)+');
-
-		logger.info('walk8243', true, 46, { key: 'value' });
-		checkColorOutFormat(levels.INFO, 'debug', 'walk8243 true 46 { key: \'value\' }');
-
-		logger.error('walk8243');
-		checkColorErrFormat(levels.ERROR, 'debug', 'walk8243');
-
-		assert.strictEqual(spyStdoutWrite.callCount, 12);
-		assert.strictEqual(spyStderrWrite.callCount, 1);
+	describe('debug', () => {
+		it('出力内容', () => {
+			const logger = getLogger('debug');
+	
+			logger.info('walk8243');
+			checkColorOutFormat(levels.INFO, 'debug', 'walk8243');
+			logger.info('first\nsecond');
+			checkColorOutFormat(levels.INFO, 'debug', 'first\nsecond');
+			logger.info(true);
+			checkColorOutFormat(levels.INFO, 'debug', 'true');
+			logger.info(46);
+			checkColorOutFormat(levels.INFO, 'debug', '46');
+			logger.info({ key: 'value' });
+			checkColorOutFormat(levels.INFO, 'debug', '{ key: \'value\' }');
+			logger.info([ 'aaa', 'bbb', 'ccc' ]);
+			checkColorOutFormat(levels.INFO, 'debug', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
+			logger.info(undefined);
+			checkColorOutFormat(levels.INFO, 'debug', 'undefined');
+			logger.info(null);
+			checkColorOutFormat(levels.INFO, 'debug', 'null');
+	
+			logger.info(Symbol('walk8243'));
+			checkColorOutFormat(levels.INFO, 'debug', 'Symbol\\(walk8243\\)');
+			logger.info(function() { return 'walk8243'; });
+			checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
+			logger.info(new Error('walk8243'));
+			checkColorOutFormat(levels.INFO, 'debug', 'Error: walk8243(\n\\s+at .+)+');
+	
+			logger.info('walk8243', true, 46, { key: 'value' });
+			checkColorOutFormat(levels.INFO, 'debug', 'walk8243 true 46 { key: \'value\' }');
+	
+			logger.error('walk8243');
+			checkColorErrFormat(levels.ERROR, 'debug', 'walk8243');
+	
+			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
 	});
 
-	it('development', () => {
-		const logger = getLogger('development');
-
-		logger.info('walk8243');
-		checkShortOutFormat(levels.INFO, 'development', 'walk8243');
-		logger.info('first\nsecond');
-		checkShortOutFormat(levels.INFO, 'development', 'first second');
-		logger.info(true);
-		checkShortOutFormat(levels.INFO, 'development', 'true');
-		logger.info(46);
-		checkShortOutFormat(levels.INFO, 'development', '46');
-		logger.info({ key: 'value' });
-		checkShortOutFormat(levels.INFO, 'development', '{"key":"value"}');
-		logger.info([ 'aaa', 'bbb', 'ccc' ]);
-		checkShortOutFormat(levels.INFO, 'development', '\\["aaa","bbb","ccc"\\]');
-		logger.info(undefined);
-		checkShortOutFormat(levels.INFO, 'development', 'undefined');
-		logger.info(null);
-		checkShortOutFormat(levels.INFO, 'development', 'null');
-
-		logger.info(Symbol('walk8243'));
-		checkShortOutFormat(levels.INFO, 'development', 'Symbol\\(walk8243\\)');
-		logger.info(function() { return 'walk8243'; });
-		checkShortOutFormat(levels.INFO, 'development', 'function \\(\\) { return \'walk8243\'; }');
-		logger.info(new Error('walk8243'));
-		checkShortOutFormat(levels.INFO, 'development', 'Error: walk8243');
-
-		logger.info('walk8243', true, 46, { key: 'value' });
-		checkShortOutFormat(levels.INFO, 'development', 'walk8243 true 46 {"key":"value"}');
-
-		logger.error('walk8243');
-		checkShortErrFormat(levels.ERROR, 'development', 'walk8243');
-
-		assert.strictEqual(spyStdoutWrite.callCount, 12);
-		assert.strictEqual(spyStderrWrite.callCount, 1);
+	describe('development', () => {
+		it('出力内容', () => {
+			const logger = getLogger('development');
+	
+			logger.info('walk8243');
+			checkShortOutFormat(levels.INFO, 'development', 'walk8243');
+			logger.info('first\nsecond');
+			checkShortOutFormat(levels.INFO, 'development', 'first second');
+			logger.info(true);
+			checkShortOutFormat(levels.INFO, 'development', 'true');
+			logger.info(46);
+			checkShortOutFormat(levels.INFO, 'development', '46');
+			logger.info({ key: 'value' });
+			checkShortOutFormat(levels.INFO, 'development', '{"key":"value"}');
+			logger.info([ 'aaa', 'bbb', 'ccc' ]);
+			checkShortOutFormat(levels.INFO, 'development', '\\["aaa","bbb","ccc"\\]');
+			logger.info(undefined);
+			checkShortOutFormat(levels.INFO, 'development', 'undefined');
+			logger.info(null);
+			checkShortOutFormat(levels.INFO, 'development', 'null');
+	
+			logger.info(Symbol('walk8243'));
+			checkShortOutFormat(levels.INFO, 'development', 'Symbol\\(walk8243\\)');
+			logger.info(function() { return 'walk8243'; });
+			checkShortOutFormat(levels.INFO, 'development', 'function \\(\\) { return \'walk8243\'; }');
+			logger.info(new Error('walk8243'));
+			checkShortOutFormat(levels.INFO, 'development', 'Error: walk8243');
+	
+			logger.info('walk8243', true, 46, { key: 'value' });
+			checkShortOutFormat(levels.INFO, 'development', 'walk8243 true 46 {"key":"value"}');
+	
+			logger.error('walk8243');
+			checkShortErrFormat(levels.ERROR, 'development', 'walk8243');
+	
+			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
 	});
 
-	it('production', () => {
-		const logger = getLogger('production');
-
-		logger.info('walk8243');
-		checkShortOutFormat(levels.INFO, 'production', 'walk8243');
-		logger.info('first\nsecond');
-		checkShortOutFormat(levels.INFO, 'production', 'first second');
-		logger.info(true);
-		checkShortOutFormat(levels.INFO, 'production', 'true');
-		logger.info(46);
-		checkShortOutFormat(levels.INFO, 'production', '46');
-		logger.info({ key: 'value' });
-		checkShortOutFormat(levels.INFO, 'production', '{"key":"value"}');
-		logger.info([ 'aaa', 'bbb', 'ccc' ]);
-		checkShortOutFormat(levels.INFO, 'production', '\\["aaa","bbb","ccc"\\]');
-		logger.info(undefined);
-		checkShortOutFormat(levels.INFO, 'production', 'undefined');
-		logger.info(null);
-		checkShortOutFormat(levels.INFO, 'production', 'null');
-
-		logger.info(Symbol('walk8243'));
-		checkShortOutFormat(levels.INFO, 'production', 'Symbol\\(walk8243\\)');
-		logger.info(function() { return 'walk8243'; });
-		checkShortOutFormat(levels.INFO, 'production', 'function \\(\\) { return \'walk8243\'; }');
-		logger.info(new Error('walk8243'));
-		checkShortOutFormat(levels.INFO, 'production', 'Error: walk8243');
-
-		logger.info('walk8243', true, 46, { key: 'value' });
-		checkShortOutFormat(levels.INFO, 'production', 'walk8243 true 46 {"key":"value"}');
-
-		logger.error('walk8243');
-		checkShortErrFormat(levels.ERROR, 'production', 'walk8243');
-
-		assert.strictEqual(spyStdoutWrite.callCount, 12);
-		assert.strictEqual(spyStderrWrite.callCount, 1);
+	describe('production', () => {
+		it('出力内容', () => {
+			const logger = getLogger('production');
+	
+			logger.info('walk8243');
+			checkShortOutFormat(levels.INFO, 'production', 'walk8243');
+			logger.info('first\nsecond');
+			checkShortOutFormat(levels.INFO, 'production', 'first second');
+			logger.info(true);
+			checkShortOutFormat(levels.INFO, 'production', 'true');
+			logger.info(46);
+			checkShortOutFormat(levels.INFO, 'production', '46');
+			logger.info({ key: 'value' });
+			checkShortOutFormat(levels.INFO, 'production', '{"key":"value"}');
+			logger.info([ 'aaa', 'bbb', 'ccc' ]);
+			checkShortOutFormat(levels.INFO, 'production', '\\["aaa","bbb","ccc"\\]');
+			logger.info(undefined);
+			checkShortOutFormat(levels.INFO, 'production', 'undefined');
+			logger.info(null);
+			checkShortOutFormat(levels.INFO, 'production', 'null');
+	
+			logger.info(Symbol('walk8243'));
+			checkShortOutFormat(levels.INFO, 'production', 'Symbol\\(walk8243\\)');
+			logger.info(function() { return 'walk8243'; });
+			checkShortOutFormat(levels.INFO, 'production', 'function \\(\\) { return \'walk8243\'; }');
+			logger.info(new Error('walk8243'));
+			checkShortOutFormat(levels.INFO, 'production', 'Error: walk8243');
+	
+			logger.info('walk8243', true, 46, { key: 'value' });
+			checkShortOutFormat(levels.INFO, 'production', 'walk8243 true 46 {"key":"value"}');
+	
+			logger.error('walk8243');
+			checkShortErrFormat(levels.ERROR, 'production', 'walk8243');
+	
+			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
 	});
 
-	it('color', () => {
-		const logger = getLogger('color');
-
-		logger.info('walk8243');
-		checkColorOutFormat(levels.INFO, 'color', 'walk8243');
-		logger.info('first\nsecond');
-		checkColorOutFormat(levels.INFO, 'color', 'first\nsecond');
-		logger.info(true);
-		checkColorOutFormat(levels.INFO, 'color', 'true');
-		logger.info(46);
-		checkColorOutFormat(levels.INFO, 'color', '46');
-		logger.info({ key: 'value' });
-		checkColorOutFormat(levels.INFO, 'color', '{ key: \'value\' }');
-		logger.info([ 'aaa', 'bbb', 'ccc' ]);
-		checkColorOutFormat(levels.INFO, 'color', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
-		logger.info(undefined);
-		checkColorOutFormat(levels.INFO, 'color', 'undefined');
-		logger.info(null);
-		checkColorOutFormat(levels.INFO, 'color', 'null');
-
-		logger.info(Symbol('walk8243'));
-		checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
-		logger.info(function() { return 'walk8243'; });
-		checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
-		logger.info(new Error('walk8243'));
-		checkColorOutFormat(levels.INFO, 'color', 'Error: walk8243(\n\\s+at .+)+');
-
-		logger.info('walk8243', true, 46, { key: 'value' });
-		checkColorOutFormat(levels.INFO, 'color', 'walk8243 true 46 { key: \'value\' }');
-
-		logger.error('walk8243');
-		checkColorErrFormat(levels.ERROR, 'color', 'walk8243');
-
-		assert.strictEqual(spyStdoutWrite.callCount, 12);
-		assert.strictEqual(spyStderrWrite.callCount, 1);
+	describe('color', () => {
+		it('出力内容', () => {
+			const logger = getLogger('color');
+	
+			logger.info('walk8243');
+			checkColorOutFormat(levels.INFO, 'color', 'walk8243');
+			logger.info('first\nsecond');
+			checkColorOutFormat(levels.INFO, 'color', 'first\nsecond');
+			logger.info(true);
+			checkColorOutFormat(levels.INFO, 'color', 'true');
+			logger.info(46);
+			checkColorOutFormat(levels.INFO, 'color', '46');
+			logger.info({ key: 'value' });
+			checkColorOutFormat(levels.INFO, 'color', '{ key: \'value\' }');
+			logger.info([ 'aaa', 'bbb', 'ccc' ]);
+			checkColorOutFormat(levels.INFO, 'color', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
+			logger.info(undefined);
+			checkColorOutFormat(levels.INFO, 'color', 'undefined');
+			logger.info(null);
+			checkColorOutFormat(levels.INFO, 'color', 'null');
+	
+			logger.info(Symbol('walk8243'));
+			checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
+			logger.info(function() { return 'walk8243'; });
+			checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
+			logger.info(new Error('walk8243'));
+			checkColorOutFormat(levels.INFO, 'color', 'Error: walk8243(\n\\s+at .+)+');
+	
+			logger.info('walk8243', true, 46, { key: 'value' });
+			checkColorOutFormat(levels.INFO, 'color', 'walk8243 true 46 { key: \'value\' }');
+	
+			logger.error('walk8243');
+			checkColorErrFormat(levels.ERROR, 'color', 'walk8243');
+	
+			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
 	});
 
 	function checkBasicOutFormat(level: Level, tag: string, msg: string) {
