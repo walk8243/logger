@@ -167,6 +167,43 @@ describe('output', () => {
 		assert.strictEqual(spyStderrWrite.callCount, 1);
 	});
 
+	it('color', () => {
+		const logger = getLogger('color');
+
+		logger.info('walk8243');
+		checkColorOutFormat(levels.INFO, 'color', 'walk8243');
+		logger.info('first\nsecond');
+		checkColorOutFormat(levels.INFO, 'color', 'first\nsecond');
+		logger.info(true);
+		checkColorOutFormat(levels.INFO, 'color', 'true');
+		logger.info(46);
+		checkColorOutFormat(levels.INFO, 'color', '46');
+		logger.info({ key: 'value' });
+		checkColorOutFormat(levels.INFO, 'color', '{ key: \'value\' }');
+		logger.info([ 'aaa', 'bbb', 'ccc' ]);
+		checkColorOutFormat(levels.INFO, 'color', '\\[ \'aaa\', \'bbb\', \'ccc\' \\]');
+		logger.info(undefined);
+		checkColorOutFormat(levels.INFO, 'color', 'undefined');
+		logger.info(null);
+		checkColorOutFormat(levels.INFO, 'color', 'null');
+
+		logger.info(Symbol('walk8243'));
+		checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
+		logger.info(function() { return 'walk8243'; });
+		checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
+		logger.info(new Error('walk8243'));
+		checkColorOutFormat(levels.INFO, 'color', 'Error: walk8243(\n\\s+at .+)+');
+
+		logger.info('walk8243', true, 46, { key: 'value' });
+		checkColorOutFormat(levels.INFO, 'color', 'walk8243 true 46 { key: \'value\' }');
+
+		logger.error('walk8243');
+		checkColorErrFormat(levels.ERROR, 'color', 'walk8243');
+
+		assert.strictEqual(spyStdoutWrite.callCount, 12);
+		assert.strictEqual(spyStderrWrite.callCount, 1);
+	});
+
 	function checkBasicOutFormat(level: Level, tag: string, msg: string) {
 		const target = spyStdoutWrite.lastCall.args[0];
 		checkBasicLogFormat(level, tag, msg, target);
