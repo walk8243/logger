@@ -135,7 +135,7 @@ describe('output', () => {
 
 		it('trace', () => {
 			logger.trace('walk8243');
-			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStdoutWrite.notCalled);
 			assert.ok(spyStderrWrite.notCalled);
 		});
 		it('debug', () => {

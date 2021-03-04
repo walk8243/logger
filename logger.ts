@@ -36,7 +36,7 @@ export const setting: log4js.Configuration = {
 	},
 	categories: {
 		default: { appenders: ['longOut', 'longErr'], level: 'ALL' },
-		debug: { appenders: ['colorOut', 'colorErr'], level: 'ALL' },
+		debug: { appenders: ['colorOut', 'colorErr'], level: 'DEBUG' },
 		development: { appenders: ['shortOut', 'shortErr'], level: 'DEBUG' },
 		production: { appenders: ['shortOut', 'shortErr'], level: 'INFO' },
 		color: { appenders: ['colorOut', 'colorErr'], level: 'ALL' },
