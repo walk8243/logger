@@ -54,7 +54,7 @@
       ".ts"
     ],
     "include": [
-      "**/*.ts"
+      "logger.ts"
     ],
     "exclude": [
       "*.d.ts",
