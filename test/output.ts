@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Level, levels } from 'log4js';
+import { Level, levels, Logger } from 'log4js';
 import { spy, SinonSpy } from 'sinon';
 import { getLogger } from '../logger';
 
@@ -20,9 +20,12 @@ describe('output', () => {
 	});
 
 	describe('default', () => {
+		let logger: Logger;
+		beforeEach(() => {
+			logger = getLogger();
+		});
+
 		it('出力内容', () => {
-			const logger = getLogger();
-	
 			logger.info('walk8243');
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243');
 			logger.info('first\nsecond');
@@ -39,29 +42,63 @@ describe('output', () => {
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'undefined');
 			logger.info(null);
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'null');
-	
+
 			logger.info(Symbol('walk8243'));
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
 			logger.info(new Error('walk8243'));
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Error: walk8243(\n\\s+at .+)+');
-	
+
 			logger.info('walk8243', true, 46, { key: 'value' });
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'walk8243 true 46 { key: \'value\' }');
-	
+
 			logger.error('walk8243');
 			checkBasicErrFormat(levels.ERROR, 'MidSummer', 'walk8243');
-	
+
 			assert.strictEqual(spyStdoutWrite.callCount, 12);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
+
+		it('trace', () => {
+			logger.trace('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('debug', () => {
+			logger.debug('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('info', () => {
+			logger.info('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('warn', () => {
+			logger.warn('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('error', () => {
+			logger.error('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('fatal', () => {
+			logger.fatal('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
 		});
 	});
 
 	describe('debug', () => {
+		let logger: Logger;
+		beforeEach(() => {
+			logger = getLogger('debug');
+		});
+
 		it('出力内容', () => {
-			const logger = getLogger('debug');
-	
 			logger.info('walk8243');
 			checkColorOutFormat(levels.INFO, 'debug', 'walk8243');
 			logger.info('first\nsecond');
@@ -78,29 +115,63 @@ describe('output', () => {
 			checkColorOutFormat(levels.INFO, 'debug', 'undefined');
 			logger.info(null);
 			checkColorOutFormat(levels.INFO, 'debug', 'null');
-	
+
 			logger.info(Symbol('walk8243'));
 			checkColorOutFormat(levels.INFO, 'debug', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
 			logger.info(new Error('walk8243'));
 			checkColorOutFormat(levels.INFO, 'debug', 'Error: walk8243(\n\\s+at .+)+');
-	
+
 			logger.info('walk8243', true, 46, { key: 'value' });
 			checkColorOutFormat(levels.INFO, 'debug', 'walk8243 true 46 { key: \'value\' }');
-	
+
 			logger.error('walk8243');
 			checkColorErrFormat(levels.ERROR, 'debug', 'walk8243');
-	
+
 			assert.strictEqual(spyStdoutWrite.callCount, 12);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
+
+		it('trace', () => {
+			logger.trace('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('debug', () => {
+			logger.debug('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('info', () => {
+			logger.info('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('warn', () => {
+			logger.warn('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('error', () => {
+			logger.error('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('fatal', () => {
+			logger.fatal('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
 		});
 	});
 
 	describe('development', () => {
+		let logger: Logger;
+		beforeEach(() => {
+			logger = getLogger('development');
+		});
+
 		it('出力内容', () => {
-			const logger = getLogger('development');
-	
 			logger.info('walk8243');
 			checkShortOutFormat(levels.INFO, 'development', 'walk8243');
 			logger.info('first\nsecond');
@@ -117,29 +188,63 @@ describe('output', () => {
 			checkShortOutFormat(levels.INFO, 'development', 'undefined');
 			logger.info(null);
 			checkShortOutFormat(levels.INFO, 'development', 'null');
-	
+
 			logger.info(Symbol('walk8243'));
 			checkShortOutFormat(levels.INFO, 'development', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkShortOutFormat(levels.INFO, 'development', 'function \\(\\) { return \'walk8243\'; }');
 			logger.info(new Error('walk8243'));
 			checkShortOutFormat(levels.INFO, 'development', 'Error: walk8243');
-	
+
 			logger.info('walk8243', true, 46, { key: 'value' });
 			checkShortOutFormat(levels.INFO, 'development', 'walk8243 true 46 {"key":"value"}');
-	
+
 			logger.error('walk8243');
 			checkShortErrFormat(levels.ERROR, 'development', 'walk8243');
-	
+
 			assert.strictEqual(spyStdoutWrite.callCount, 12);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
+
+		it('trace', () => {
+			logger.trace('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('debug', () => {
+			logger.debug('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('info', () => {
+			logger.info('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('warn', () => {
+			logger.warn('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('error', () => {
+			logger.error('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('fatal', () => {
+			logger.fatal('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
 		});
 	});
 
 	describe('production', () => {
+		let logger: Logger;
+		beforeEach(() => {
+			logger = getLogger('production');
+		});
+
 		it('出力内容', () => {
-			const logger = getLogger('production');
-	
 			logger.info('walk8243');
 			checkShortOutFormat(levels.INFO, 'production', 'walk8243');
 			logger.info('first\nsecond');
@@ -156,29 +261,63 @@ describe('output', () => {
 			checkShortOutFormat(levels.INFO, 'production', 'undefined');
 			logger.info(null);
 			checkShortOutFormat(levels.INFO, 'production', 'null');
-	
+
 			logger.info(Symbol('walk8243'));
 			checkShortOutFormat(levels.INFO, 'production', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkShortOutFormat(levels.INFO, 'production', 'function \\(\\) { return \'walk8243\'; }');
 			logger.info(new Error('walk8243'));
 			checkShortOutFormat(levels.INFO, 'production', 'Error: walk8243');
-	
+
 			logger.info('walk8243', true, 46, { key: 'value' });
 			checkShortOutFormat(levels.INFO, 'production', 'walk8243 true 46 {"key":"value"}');
-	
+
 			logger.error('walk8243');
 			checkShortErrFormat(levels.ERROR, 'production', 'walk8243');
-	
+
 			assert.strictEqual(spyStdoutWrite.callCount, 12);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
+
+		it('trace', () => {
+			logger.trace('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('debug', () => {
+			logger.debug('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('info', () => {
+			logger.info('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('warn', () => {
+			logger.warn('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('error', () => {
+			logger.error('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('fatal', () => {
+			logger.fatal('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
 		});
 	});
 
 	describe('color', () => {
+		let logger: Logger;
+		beforeEach(() => {
+			logger = getLogger('color');
+		});
+
 		it('出力内容', () => {
-			const logger = getLogger('color');
-	
 			logger.info('walk8243');
 			checkColorOutFormat(levels.INFO, 'color', 'walk8243');
 			logger.info('first\nsecond');
@@ -195,22 +334,53 @@ describe('output', () => {
 			checkColorOutFormat(levels.INFO, 'color', 'undefined');
 			logger.info(null);
 			checkColorOutFormat(levels.INFO, 'color', 'null');
-	
+
 			logger.info(Symbol('walk8243'));
 			checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
 			logger.info(new Error('walk8243'));
 			checkColorOutFormat(levels.INFO, 'color', 'Error: walk8243(\n\\s+at .+)+');
-	
+
 			logger.info('walk8243', true, 46, { key: 'value' });
 			checkColorOutFormat(levels.INFO, 'color', 'walk8243 true 46 { key: \'value\' }');
-	
+
 			logger.error('walk8243');
 			checkColorErrFormat(levels.ERROR, 'color', 'walk8243');
-	
+
 			assert.strictEqual(spyStdoutWrite.callCount, 12);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
+		});
+
+		it('trace', () => {
+			logger.trace('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('debug', () => {
+			logger.debug('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('info', () => {
+			logger.info('walk8243');
+			assert.ok(spyStdoutWrite.called);
+			assert.ok(spyStderrWrite.notCalled);
+		});
+		it('warn', () => {
+			logger.warn('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('error', () => {
+			logger.error('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
+		});
+		it('fatal', () => {
+			logger.fatal('walk8243');
+			assert.ok(spyStdoutWrite.notCalled);
+			assert.ok(spyStderrWrite.called);
 		});
 	});
 
