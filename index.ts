@@ -3,9 +3,10 @@ import { Logger } from 'log4js';
 
 for (const env of [ undefined, 'default', 'debug', 'development', 'production' ]) {
 	const logger = getLogger(env);
-	console.log(`============= ${env} =============`);
+	const envStr = String(env);
+	console.log(`${'='.repeat(Math.ceil((38 - envStr.length) / 2))} ${envStr} ${'='.repeat(Math.floor((38 - envStr.length) / 2))}`);
 	showLogs(logger);
-	console.log('='.repeat(String(env).length + 28));
+	console.log('='.repeat(40));
 	console.log();
 }
 
