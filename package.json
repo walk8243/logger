@@ -9,7 +9,7 @@
     "clean": "yarn run tsc --build --clean",
     "cover": "yarn run test && yarn run nyc report --reporter=html --reporter=text",
     "init": "yarn && yarn run build-debug",
-    "mocha": "yarn run nyc mocha test/**/*.ts",
+    "mocha": "yarn run nyc mocha test/*.ts",
     "node": "node index",
     "package": "yarn && yarn run test && yarn run build && npm publish",
     "start": "yarn run build && yarn run node",

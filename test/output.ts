@@ -47,6 +47,8 @@ describe('output', () => {
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
+			logger.info(function test() { return 'walk8243'; });
+			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Error: walk8243(\n\\s+at .+)+');
 
@@ -56,7 +58,7 @@ describe('output', () => {
 			logger.error('walk8243');
 			checkBasicErrFormat(levels.ERROR, 'MidSummer', 'walk8243');
 
-			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStdoutWrite.callCount, 13);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
 		});
 
@@ -120,6 +122,8 @@ describe('output', () => {
 			checkColorOutFormat(levels.INFO, 'debug', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
+			logger.info(function test() { return 'walk8243'; });
+			checkColorOutFormat(levels.INFO, 'debug', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
 			checkColorOutFormat(levels.INFO, 'debug', 'Error: walk8243(\n\\s+at .+)+');
 
@@ -129,7 +133,7 @@ describe('output', () => {
 			logger.error('walk8243');
 			checkColorErrFormat(levels.ERROR, 'debug', 'walk8243');
 
-			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStdoutWrite.callCount, 13);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
 		});
 
@@ -192,7 +196,9 @@ describe('output', () => {
 			logger.info(Symbol('walk8243'));
 			checkShortOutFormat(levels.INFO, 'development', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
-			checkShortOutFormat(levels.INFO, 'development', 'function \\(\\) { return \'walk8243\'; }');
+			checkShortOutFormat(levels.INFO, 'development', '\\[Function \\(anonymous\\)\\]');
+			logger.info(function test() { return 'walk8243'; });
+			checkShortOutFormat(levels.INFO, 'development', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
 			checkShortOutFormat(levels.INFO, 'development', 'Error: walk8243');
 
@@ -202,7 +208,7 @@ describe('output', () => {
 			logger.error('walk8243');
 			checkShortErrFormat(levels.ERROR, 'development', 'walk8243');
 
-			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStdoutWrite.callCount, 13);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
 		});
 
@@ -265,7 +271,9 @@ describe('output', () => {
 			logger.info(Symbol('walk8243'));
 			checkShortOutFormat(levels.INFO, 'production', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
-			checkShortOutFormat(levels.INFO, 'production', 'function \\(\\) { return \'walk8243\'; }');
+			checkShortOutFormat(levels.INFO, 'production', '\\[Function \\(anonymous\\)\\]');
+			logger.info(function test() { return 'walk8243'; });
+			checkShortOutFormat(levels.INFO, 'production', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
 			checkShortOutFormat(levels.INFO, 'production', 'Error: walk8243');
 
@@ -275,7 +283,7 @@ describe('output', () => {
 			logger.error('walk8243');
 			checkShortErrFormat(levels.ERROR, 'production', 'walk8243');
 
-			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStdoutWrite.callCount, 13);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
 		});
 
@@ -339,6 +347,8 @@ describe('output', () => {
 			checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
+			logger.info(function test() { return 'walk8243'; });
+			checkColorOutFormat(levels.INFO, 'color', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
 			checkColorOutFormat(levels.INFO, 'color', 'Error: walk8243(\n\\s+at .+)+');
 
@@ -348,7 +358,7 @@ describe('output', () => {
 			logger.error('walk8243');
 			checkColorErrFormat(levels.ERROR, 'color', 'walk8243');
 
-			assert.strictEqual(spyStdoutWrite.callCount, 12);
+			assert.strictEqual(spyStdoutWrite.callCount, 13);
 			assert.strictEqual(spyStderrWrite.callCount, 1);
 		});
 

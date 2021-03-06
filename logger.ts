@@ -9,7 +9,9 @@ log4js.addLayout('walk8243/short', (config) => {
 				return d.name + ': ' + d.message.replace(/\s/g, ' ');
 			} else if(typeof d == 'object') {
 				return JSON.stringify(d);
-			} else if(typeof d == 'function' || typeof d == 'symbol') {
+			} else if(typeof d == 'function') {
+				return `[Function${d.name === '' ? ' (anonymous)' : `: ${d.name}`}]`;
+			} else if(typeof d == 'symbol') {
 				return d.toString();
 			} else {
 				return String(d);
