@@ -28,8 +28,8 @@ logger.fatal('Walk8243 has fallen asleep!');
 
 ## Example
 
-```.sh
-yarn run start
+```.log
+$ yarn run start
 
 =============== undefined ==============
 [2021-03-06T16:07:40.436] [TRACE] MidSummer - Entering walk8243 testing
