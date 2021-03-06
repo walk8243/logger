@@ -46,7 +46,11 @@ describe('output', () => {
 			logger.info(Symbol('walk8243'));
 			checkBasicOutFormat(levels.INFO, 'MidSummer', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
-			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
+			if(process.version.startsWith('v10.') || process.version.startsWith('v12.')) {
+				checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function\\]');
+			} else {
+				checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function \\(anonymous\\)\\]');
+			}
 			logger.info(function test() { return 'walk8243'; });
 			checkBasicOutFormat(levels.INFO, 'MidSummer', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
@@ -121,7 +125,11 @@ describe('output', () => {
 			logger.info(Symbol('walk8243'));
 			checkColorOutFormat(levels.INFO, 'debug', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
-			checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
+			if(process.version.startsWith('v10.') || process.version.startsWith('v12.')) {
+				checkColorOutFormat(levels.INFO, 'debug', '\\[Function\\]');
+			} else {
+				checkColorOutFormat(levels.INFO, 'debug', '\\[Function \\(anonymous\\)\\]');
+			}
 			logger.info(function test() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'debug', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
@@ -346,7 +354,11 @@ describe('output', () => {
 			logger.info(Symbol('walk8243'));
 			checkColorOutFormat(levels.INFO, 'color', 'Symbol\\(walk8243\\)');
 			logger.info(function() { return 'walk8243'; });
-			checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
+			if(process.version.startsWith('v10.') || process.version.startsWith('v12.')) {
+				checkColorOutFormat(levels.INFO, 'color', '\\[Function\\]');
+			} else {
+				checkColorOutFormat(levels.INFO, 'color', '\\[Function \\(anonymous\\)\\]');
+			}
 			logger.info(function test() { return 'walk8243'; });
 			checkColorOutFormat(levels.INFO, 'color', '\\[Function: test\\]');
 			logger.info(new Error('walk8243'));
