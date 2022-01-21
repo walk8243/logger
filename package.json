@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/walk8243/logger#readme",
   "dependencies": {
-    "log4js": "^6.3.0"
+    "log4js": "^6.4.0"
   },
   "devDependencies": {
     "@types/mocha": "^9.0.0",
